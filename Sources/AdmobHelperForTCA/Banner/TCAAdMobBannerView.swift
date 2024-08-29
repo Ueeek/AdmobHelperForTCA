@@ -34,6 +34,9 @@ public struct AdBannerView: View {
     let store: StoreOf<AdMobBanner> = .init(initialState: .init()) {
         AdMobBanner()
     }
+    
+    public init() { /* public initialize */}
+    
     public var body: some View {
         _AdBannerView(updateHeight: { newHeight in
             store.send(.adHeightChange(newHeight: newHeight))
