@@ -31,7 +31,7 @@ struct AdMobBanner {
 }
 
 public struct AdBannerView: View {
-    var store: StoreOf<AdMobBanner> = .init(initialState: .init()) {
+    let store: StoreOf<AdMobBanner> = .init(initialState: .init()) {
         AdMobBanner()
     }
     public var body: some View {
