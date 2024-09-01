@@ -9,20 +9,24 @@ import ComposableArchitecture
 import UIKit
 
 @Reducer
-struct AdMobBanner {
+public struct AdMobBanner {
+    public init() {}
+    
     @ObservableState
-    struct State: Equatable {
+    public struct State: Equatable {
+        public init() {}
         var adHeight: CGFloat = 10
     }
     
-    enum Action: Sendable {
+    public enum Action: Sendable {
         case adHeightChange(newHeight: CGFloat)
     }
     
-    var body: some Reducer<State, Action> {
+    public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
                 case .adHeightChange(let newHeight):
+                    print("# reducer adHeightChanged")
                     state.adHeight = newHeight
                     return .none
             }
@@ -31,46 +35,52 @@ struct AdMobBanner {
 }
 
 public struct AdBannerView: View {
-    let store: StoreOf<AdMobBanner> = .init(initialState: .init()) {
-        AdMobBanner()
-    }
+    let store: StoreOf<AdMobBanner>
     
-    public init() { /* public initialize */}
+    public init(store: StoreOf<AdMobBanner>? = nil) {
+        self.store = store ?? .init(initialState: AdMobBanner.State(), reducer: { AdMobBanner() })
+    }
     
     public var body: some View {
-        _AdBannerView(updateHeight: { newHeight in
-            store.send(.adHeightChange(newHeight: newHeight))
-        }).frame(height: store.adHeight)
+        _AdBannerView(store: store)
+            .frame(height: store.adHeight)
     }
-}
-
-// swiftlint:disable:next type_name
-struct _AdBannerView: UIViewControllerRepresentable {
-    var updateHeight: ((CGFloat) -> Void)
     
-    typealias UIViewControllerType = AdBannerViewController
-    
-    func makeUIViewController(context: Context) -> UIViewControllerType {
-        let bannerViewController = UIViewControllerType()
-        bannerViewController.updateHeight = updateHeight
+    // swiftlint:disable:next type_name
+    struct _AdBannerView: UIViewControllerRepresentable {
+        let store: StoreOf<AdMobBanner>
         
-        return bannerViewController
-    }
-    
-    func updateUIViewController(
-        _ uiViewController: UIViewControllerType,
-        context: Context
-    ) {
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
+        typealias UIViewControllerType = AdBannerViewController
+        
+        func makeUIViewController(context: Context) -> UIViewControllerType {
+            let bannerViewController = UIViewControllerType(store: store)
+            return bannerViewController
+        }
+        
+        func updateUIViewController(
+            _ uiViewController: UIViewControllerType,
+            context: Context
+        ) {
+        }
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator()
+        }
     }
 }
-
+    
 class AdBannerViewController: UIViewController {
+    private var store: StoreOf<AdMobBanner>
     private(set) var adBannerView = GADBannerView()
-    var updateHeight: ((CGFloat) -> Void)?
+    
+    public init(store: StoreOf<AdMobBanner>) {
+        self.store = store
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,17 +94,9 @@ class AdBannerViewController: UIViewController {
         adBannerView.rootViewController = self
     }
     
-    func updateHeight(height: CGFloat) {
-        self.updateHeight?(height)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        applyBanner(
-            view.frame.inset(
-                by: view.safeAreaInsets
-            ).size.width
-        )
+        applyBanner()
     }
     
     override func viewWillTransition(
@@ -104,18 +106,15 @@ class AdBannerViewController: UIViewController {
         coordinator.animate { _ in
             // do nothing
         } completion: { _ in
-            self.applyBanner(
-                self.view.frame.inset(
-                    by: self.view.safeAreaInsets
-                ).size.width
-            )
+            self.applyBanner()
         }
     }
     
-    private func applyBanner(_ width: CGFloat) {
+    private func applyBanner() {
+        let width = view.frame.inset(by: view.safeAreaInsets).size.width
         let size = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(width)
         adBannerView.adSize = size
         adBannerView.isAutoloadEnabled = true
-        self.updateHeight(height: size.size.height)
+        store.send(.adHeightChange(newHeight: size.size.height))
     }
 }
