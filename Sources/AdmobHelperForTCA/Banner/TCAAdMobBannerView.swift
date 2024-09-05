@@ -86,6 +86,7 @@ class AdBannerViewController: UIViewController {
         super.viewDidLoad()
         guard let adUnitIDsDict = Bundle.main.object(forInfoDictionaryKey: "AdUnitIDs") as? [String: String],
               let adUnitID = adUnitIDsDict["banner"] else {
+            store.send(.adHeightChange(newHeight: 0))
             print("# NO BANNER ID")
             return
         }
