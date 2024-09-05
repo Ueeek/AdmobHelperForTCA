@@ -42,8 +42,10 @@ public struct AdBannerView: View {
     }
     
     public var body: some View {
-        _AdBannerView(store: store)
-            .frame(height: store.adHeight)
+        WithPerceptionTracking {
+            _AdBannerView(store: store)
+                .frame(height: store.adHeight)
+        }
     }
     
     // swiftlint:disable:next type_name
