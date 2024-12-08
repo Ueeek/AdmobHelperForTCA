@@ -15,7 +15,7 @@ public struct AdMobBanner {
     @ObservableState
     public struct State: Equatable {
         public init() {}
-        var adHeight: CGFloat = 10
+        var adHeight: CGFloat = 70
         var didFirstAppear = false
     }
     
@@ -101,7 +101,6 @@ class AdBannerViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("# viewDidLoad \(adBannerView.frame) \(self.view.frame))")
         if store.didFirstAppear {
             return
         }
