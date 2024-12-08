@@ -16,6 +16,7 @@ public struct AdMobBanner {
     public struct State: Equatable {
         public init() {}
         var adHeight: CGFloat = 10
+        var didFirstAppear = false
     }
     
     public enum Action: Sendable {
@@ -28,6 +29,7 @@ public struct AdMobBanner {
                 case .adHeightChange(let newHeight):
                     print("# reducer adHeightChanged")
                     state.adHeight = newHeight
+                    state.didFirstAppear = true
                     return .none
             }
         }
@@ -99,6 +101,9 @@ class AdBannerViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        if store.didFirstAppear {
+            return
+        }
         applyBanner()
     }
     
