@@ -27,7 +27,7 @@ public struct AdMobBanner {
         Reduce { state, action in
             switch action {
                 case .adHeightChange(let newHeight):
-                    print("# reducer adHeightChanged")
+                    print("# reducer adHeightChanged old:\(state.adHeight) new:\(newHeight) ")
                     state.adHeight = newHeight
                     state.didFirstAppear = true
                     return .none
@@ -101,6 +101,7 @@ class AdBannerViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print("# viewDidLoad \(adBannerView.frame) \(self.view.frame))")
         if store.didFirstAppear {
             return
         }
@@ -123,6 +124,7 @@ class AdBannerViewController: UIViewController {
         let size = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(width)
         adBannerView.adSize = size
         adBannerView.isAutoloadEnabled = true
+        print("# applyBanner \(size)")
         store.send(.adHeightChange(newHeight: size.size.height))
     }
 }
