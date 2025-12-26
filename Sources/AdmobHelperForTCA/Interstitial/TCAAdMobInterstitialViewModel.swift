@@ -11,7 +11,7 @@ import GoogleMobileAds
 
 public class TCAAdMobInterstitialViewModel: NSObject {
     public override init() {}
-    private var interstitialAd: GADInterstitialAd?
+    private var interstitialAd: InterstitialAd?
     
     public func showAd() {
         DispatchQueue.main.async { [ weak self] in
@@ -19,7 +19,7 @@ public class TCAAdMobInterstitialViewModel: NSObject {
                 return
             }
             
-            interstitialAd.present(fromRootViewController: nil)
+            interstitialAd.present(from: nil)
         }
     }
     
@@ -31,8 +31,8 @@ public class TCAAdMobInterstitialViewModel: NSObject {
                     print("# NO Interstitial ID")
                     return
                 }
-                interstitialAd = try await GADInterstitialAd.load(
-                    withAdUnitID: adUnitID, request: GADRequest())
+                interstitialAd = try await InterstitialAd.load(
+                    with: adUnitID, request: Request())
                 interstitialAd?.fullScreenContentDelegate = self
                 print("# finish load interstitialAd \(interstitialAd)")
             } catch {
@@ -42,37 +42,37 @@ public class TCAAdMobInterstitialViewModel: NSObject {
     }
 }
 
-extension TCAAdMobInterstitialViewModel: GADFullScreenContentDelegate {
+extension TCAAdMobInterstitialViewModel: FullScreenContentDelegate {
     // swiftlint:disable:next identifier_name
-    public func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
+    public func adDidRecordImpression(_ ad: FullScreenPresentingAd) {
         print("\(#function) called")
     }
     
     // swiftlint:disable:next identifier_name
-    public func adDidRecordClick(_ ad: GADFullScreenPresentingAd) {
+    public func adDidRecordClick(_ ad: FullScreenPresentingAd) {
         print("\(#function) called")
     }
     
     public func ad(
         // swiftlint:disable:next identifier_name
-        _ ad: GADFullScreenPresentingAd,
+        _ ad: FullScreenPresentingAd,
         didFailToPresentFullScreenContentWithError error: Error
     ) {
         print("\(#function) called")
     }
     
     // swiftlint:disable:next identifier_name
-    public func adWillPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+    public func adWillPresentFullScreenContent(_ ad: FullScreenPresentingAd) {
         print("\(#function) called")
     }
     
     // swiftlint:disable:next identifier_name
-    public func adWillDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+    public func adWillDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
         print("\(#function) called")
     }
     
     // swiftlint:disable:next identifier_name
-    public func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+    public func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
         print("\(#function) called")
         // Clear the interstitial ad.
         interstitialAd = nil

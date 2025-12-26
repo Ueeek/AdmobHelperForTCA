@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "AdmobHelperForTCA",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v17),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -15,8 +15,8 @@ let package = Package(
             targets: ["AdmobHelperForTCA"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", from: "11.8.0"),
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.13.0")
+        .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", from: "12.14.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.23.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

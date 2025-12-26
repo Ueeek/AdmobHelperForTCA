@@ -75,7 +75,7 @@ public struct AdBannerView: View {
     
 class AdBannerViewController: UIViewController {
     private var store: StoreOf<AdMobBanner>
-    private(set) var adBannerView = GADBannerView()
+    private(set) var adBannerView = BannerView()
     
     public init(store: StoreOf<AdMobBanner>) {
         self.store = store
@@ -120,7 +120,7 @@ class AdBannerViewController: UIViewController {
     
     private func applyBanner() {
         let width = view.frame.inset(by: view.safeAreaInsets).size.width
-        let size = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(width)
+        let size = currentOrientationAnchoredAdaptiveBanner(width: width)
         adBannerView.adSize = size
         adBannerView.isAutoloadEnabled = true
         print("# applyBanner \(size)")
